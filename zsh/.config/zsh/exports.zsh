@@ -13,4 +13,5 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-export PATH="$HOME/.docker/bin:$PATH"
+export WANDB_BASE_URL="http://124.222.155.174:8080"
+
