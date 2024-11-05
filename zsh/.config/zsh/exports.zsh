@@ -14,4 +14,4 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 export WANDB_BASE_URL="http://124.222.155.174:8080"
-
+export TERM=xterm-256color
