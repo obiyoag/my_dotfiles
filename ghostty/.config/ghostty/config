@@ -1,0 +1,8 @@
+command = /bin/zsh
+theme = catppuccin-mocha
+custom-shader = glow.glsl
+font-size = 19
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+background-opacity = 0.9
