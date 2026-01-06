@@ -1,6 +1,6 @@
 command = /bin/zsh
-theme = catppuccin-mocha
-custom-shader = glow.glsl
+theme = catppuccin-mocha.conf
+font-family = "Sarasa Term SC"
 font-size = 19
 cursor-style = block
 cursor-style-blink = false
