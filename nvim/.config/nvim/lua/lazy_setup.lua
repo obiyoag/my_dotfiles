@@ -1,3 +1,10 @@
+-- Suppress only vim.tbl_islist deprecation warning, keep others
+local _deprecate = vim.deprecate
+rawset(vim, "deprecate", function(name, alternative, version, plugin, backtrace)
+  if name == "vim.tbl_islist" then return end
+  _deprecate(name, alternative, version, plugin, backtrace)
+end)
+
 require("lazy").setup({
   {
     "AstroNvim/AstroNvim",
