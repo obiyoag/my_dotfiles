@@ -18,7 +18,29 @@ Each package follows the pattern `<package>/.config/<app>/` which stows to `~/.c
 - **tmux/** - Tmux with TPM plugins (uses `.tmux.conf` in home)
 - **zsh/** - Zsh shell config with Zimfw
 
-## Deploying Configurations
+## Quick Start: Automated Installation
+
+For new machines, use the automated installer:
+
+```bash
+# Clone repository
+git clone https://github.com/obiyoag/my_dotfiles.git ~/my_dotfiles
+cd ~/my_dotfiles
+
+# Run installer (one command to configure everything)
+./install.sh
+```
+
+The script will:
+- Verify prerequisites (GNU Stow required)
+- Deploy all configs (claude, nvim, pip, tmux, zsh)
+- Install Zimfw for Zsh
+- Configure Tmux scripts
+- Verify all symlinks
+
+**Requirements**: git, stow (others can be installed after)
+
+## Manual Deployment (Advanced)
 
 ```bash
 # Deploy a single package (from repo root)
