@@ -6,3 +6,31 @@ cursor-style = block
 cursor-style-blink = false
 shell-integration-features = no-cursor
 background-opacity = 0.9
+keybind = shift+enter=text:\x1b\r
+
+
+# 让 macOS 的 Option 键作为终端里的 Alt/Meta（不再输出 ß/å 等特殊字符）
+# 只启用左 Option：右 Option 仍可用于输入特殊字符（如果你需要的话）
+macos-option-as-alt = left
+
+# Ghostty 在 macOS 默认会把 alt+left/right 绑成 esc:b / esc:f（影响 tmux 的 M-Left/M-Right）
+# 解除这两个默认绑定，让它们原样进入 tmux
+keybind = alt+left=unbind
+keybind = alt+right=unbind
+
+
+
+# Ctrl+number -> send function-key escape sequences
+
+# F1-F4 are SS3 sequences: ESC O P/Q/R/S
+keybind = ctrl+1=esc:OP
+keybind = ctrl+2=esc:OQ
+keybind = ctrl+3=esc:OR
+keybind = ctrl+4=esc:OS
+
+# F5-F9 are CSI sequences in xterm-style terminals
+keybind = ctrl+5=csi:15~
+keybind = ctrl+6=csi:17~
+keybind = ctrl+7=csi:18~
+keybind = ctrl+8=csi:19~
+keybind = ctrl+9=csi:20~
