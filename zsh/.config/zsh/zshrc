@@ -1,4 +1,10 @@
 skip_global_compinit=1
+
+  if ! pwd &>/dev/null; then
+      cd ~ 2>/dev/null || cd / 2>/dev/null
+  fi
+
+
 source ~/.zim/init.zsh
 source ~/.config/zsh/env.zsh
 source ~/.config/zsh/aliases.zsh
