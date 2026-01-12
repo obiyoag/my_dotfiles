@@ -13,3 +13,5 @@ if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
 elif [ -s "$NVM_DIR/nvm.sh" ]; then
   . "$NVM_DIR/nvm.sh"
 fi
+
+export ZIM_HOME="$HOME/.zim"
