@@ -14,7 +14,6 @@ return {
       status.component.fill(),
       status.component.lsp(),
       status.component.virtual_env(),
-      status.component.treesitter(),
       status.component.nav(),
     }
     opts.winbar = false

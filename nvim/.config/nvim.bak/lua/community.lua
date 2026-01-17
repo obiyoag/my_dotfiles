@@ -6,11 +6,10 @@
 return {
   "AstroNvim/astrocommunity",
   { import = "astrocommunity.pack.lua" },
-  { import = "astrocommunity.colorscheme.catppuccin" },
-  { import = "astrocommunity.editing-support.conform-nvim" },
+  -- { import = "astrocommunity.colorscheme.catppuccin" },
   { import = "astrocommunity.utility.noice-nvim" },
   { import = "astrocommunity.completion.cmp-cmdline" },
-  { import = "astrocommunity.markdown-and-latex.vimtex" },
   { import = "astrocommunity.terminal-integration.vim-tmux-yank" },
-  -- { import = "astrocommunity.motion.flash-nvim" },
+  { import = "astrocommunity.markdown-and-latex.vimtex" },
+  -- import/override with your plugins folder
 }

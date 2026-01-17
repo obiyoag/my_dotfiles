@@ -1,7 +1,14 @@
+-- Suppress only vim.tbl_islist deprecation warning, keep others
+local _deprecate = vim.deprecate
+rawset(vim, "deprecate", function(name, alternative, version, plugin, backtrace)
+  if name == "vim.tbl_islist" then return end
+  _deprecate(name, alternative, version, plugin, backtrace)
+end)
+
 require("lazy").setup({
   {
     "AstroNvim/AstroNvim",
-    version = "^5", -- Remove version tracking to elect for nightly AstroNvim
+    version = "^4", -- Remove version tracking to elect for nighly AstroNvim
     import = "astronvim.plugins",
     opts = { -- AstroNvim options must be set here with the `import` key
       mapleader = " ", -- This ensures the leader key must be configured before Lazy is set up
