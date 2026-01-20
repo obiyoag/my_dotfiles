@@ -10,13 +10,17 @@ return {
         function() require("astrocore.buffer").nav(-vim.v.count1) end,
         desc = "Previous buffer",
       }
-      opts.mappings.n["x"] = {
+      opts.mappings.n["X"] = {
         "<Nop>",
-        desc = "Disable default x",
+        desc = "Disable default X",
       }
-      opts.mappings.n["x"] = {
+      opts.mappings.n["X"] = {
         function() require("astrocore.buffer").close() end,
         desc = "Close buffer",
+      }
+      opts.mappings.n["<Leader>dr"] = {
+        function() require("dap").restart() end,
+        desc = "DAP: Restart session",
       }
     end,
   },
