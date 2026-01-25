@@ -63,13 +63,26 @@ return {
 
           require("dap-python").setup(path, opts)
 
-          local dap = require "dap"
+          local function strip_jsonc_comments(text)
+            -- 移除 // 注释
+            text = text:gsub("//[^\n]*", "")
+            -- 移除 /* */ 注释
+            text = text:gsub("/%*.-%*/", "")
+            return text
+          end
 
-          local function read_json_file(file)
+          local function read_jsonc_file(file)
             if vim.fn.filereadable(file) ~= 1 then return nil end
+
             local lines = vim.fn.readfile(file)
-            local ok, decoded = pcall(vim.json.decode, table.concat(lines, "\n"))
+            local text = table.concat(lines, "\n")
+
+            -- 去除 JSONC 注释
+            text = strip_jsonc_comments(text)
+
+            local ok, decoded = pcall(vim.json.decode, text)
             if not ok then return nil end
+
             return decoded
           end
 
@@ -101,15 +114,15 @@ return {
           end
 
           local function load_project_configs()
-            local file = root .. "/debug_args.json"
-            local decoded = read_json_file(file)
+            local file = root .. "/debug_args.jsonc"
+            local decoded = read_jsonc_file(file)
             if decoded == nil then return {} end
 
             -- 默认模板（你原来那些字段都放这里）
             local defaults = {
               type = "python",
               request = "launch",
-              name = "Python: Launch (debug_args.json)",
+              name = "Python: Launch (debug_args.jsonc)",
               program = "${file}",
               cwd = "${workspaceFolder}",
               console = "integratedTerminal",
@@ -128,17 +141,34 @@ return {
             return { merge(defaults, decoded) }
           end
 
-          -- lua_ls 可能对 inject-field 报 warning，必要时取消注释下一行
-          ---@diagnostic disable-next-line: inject-field
-          dap.configurations.python = dap.configurations.python or {}
+          local function reload_dap_python_configs()
+            local dap = require "dap"
+            ---@diagnostic disable-next-line: inject-field
+            dap.configurations.python = dap.configurations.python or {}
 
-          -- 把项目配置插到最前面（优先显示）
-          vim.schedule(function()
+            -- 先删掉之前注入的（用 name 前缀识别）
+            for i = #dap.configurations.python, 1, -1 do
+              local c = dap.configurations.python[i]
+              if type(c) == "table" and type(c.name) == "string" and c.name:find("%(debug_args%.jsonc%)", 1, true) then
+                table.remove(dap.configurations.python, i)
+              end
+            end
+
+            -- 再把最新的插到最前面
             local configs = load_project_configs()
             for i = #configs, 1, -1 do
               table.insert(dap.configurations.python, 1, configs[i])
             end
+          end
+
+          vim.schedule(function()
+            if vim.fn.filereadable(root .. "/debug_args.jsonc") == 1 then pcall(reload_dap_python_configs) end
           end)
+
+          vim.api.nvim_create_autocmd("BufWritePost", {
+            pattern = "debug_args.jsonc",
+            callback = function() pcall(reload_dap_python_configs) end,
+          })
         end,
       },
     },
@@ -154,85 +184,5 @@ return {
         lsp_format = "fallback",
       },
     },
-  },
-  {
-    "rcarriga/nvim-dap-ui",
-    optional = true,
-    dependencies = { "mfussenegger/nvim-dap" },
-    config = function()
-      local dap = require "dap"
-      local dapui = require "dapui"
-
-      --------------------------------------------------------------------------
-      -- 1. 基础 UI 设置（避免 scope 展开/跳动）
-      --------------------------------------------------------------------------
-      local ui_cfg = {
-        expand_lines = false,
-        layouts = {
-          {
-            elements = {
-              { id = "scopes", size = 0.35 },
-              { id = "stacks", size = 0.25 },
-              { id = "breakpoints", size = 0.20 },
-              { id = "watches", size = 0.20 },
-            },
-            size = 45, -- ✅ 固定宽度（列数）
-            position = "right", -- ✅ 放右边，Neo-tree 一般在 left
-          },
-          {
-            elements = { "repl", "console" },
-            size = 12,
-            position = "bottom",
-          },
-        },
-      }
-      dapui.setup(ui_cfg)
-
-      --------------------------------------------------------------------------
-      -- 2. 清理所有已有的 dapui / dapclient listeners（关键！！！）
-      --------------------------------------------------------------------------
-      local function clear_listeners(ev)
-        for _, when in ipairs { "after", "before" } do
-          local bucket = dap.listeners[when] and dap.listeners[when][ev]
-          if bucket then
-            for k, _ in pairs(bucket) do
-              if type(k) == "string" then
-                local lk = string.lower(k)
-                if string.find(lk, "dapui", 1, true) or string.find(lk, "dapclient", 1, true) then bucket[k] = nil end
-              end
-            end
-          end
-        end
-      end
-
-      for _, ev in ipairs {
-        "event_initialized",
-        "event_terminated",
-        "event_exited",
-        "event_stopped",
-      } do
-        clear_listeners(ev)
-      end
-
-      --------------------------------------------------------------------------
-      -- 3. 只注册你自己的一套 listeners（稳定、不跳）
-      --------------------------------------------------------------------------
-
-      -- 只在真正开始调试时打开 UI
-      dap.listeners.after.event_initialized["user_dapui"] = function() dapui.open() end
-
-      -- ❌ 不在 stopped 里做任何事情（这是“跳来跳去”的根源）
-      dap.listeners.after.event_stopped["user_dapui"] = nil
-
-      -- 结束时：确认 session 真没了再关 UI（防子进程抖动）
-      local function close_if_no_session()
-        vim.schedule(function()
-          if dap.session() == nil then dapui.close() end
-        end)
-      end
-
-      dap.listeners.before.event_terminated["user_dapui"] = close_if_no_session
-      dap.listeners.before.event_exited["user_dapui"] = close_if_no_session
-    end,
   },
 }
