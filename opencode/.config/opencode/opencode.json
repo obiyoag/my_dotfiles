@@ -1,8 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "small_model": "opencode/glm-4.7-free",
-	"model": "anthropic/claude-sonnet-4-5",
-	"theme": "catppuccin-frappe",
+  "small_model": "minimax-cn-coding-plan/MiniMax-M2.1",
+  "model": "anthropic/claude-sonnet-4-5",
+  "theme": "catppuccin-frappe",
   "instructions": [
     "AGENTS.md",
     "CLAUDE.md"
@@ -16,15 +16,15 @@
     "input_line_end": "none"
   },
   "permission": {
-		"edit": "allow",
-		"bash": "allow",
-		"webfetch": "allow",
-		"doom_loop": "allow",
-		"external_directory": "allow"
-	},
+    "edit": "allow",
+    "bash": "allow",
+    "webfetch": "allow",
+    "doom_loop": "allow",
+    "external_directory": "allow"
+  },
   "agent": {
     "Search": {
-      "model": "zai-coding-plan/glm-4.7",
+      "model": "minimax-cn-coding-plan/MiniMax-M2.1",
       "mode": "subagent",
       "description": "Read-only agent for web searches",
       "prompt": "You are Jeff, a research specialist. Use only read/online tools to gather information, summarize briefly with sources, and avoid edits or speculation. When researching information on the internet, use the google_search tool to conduct searches, and then follow up with website_fetch tool calls to gather detailed content from relevant pages.",
@@ -37,71 +37,9 @@
   },
   "plugin": [
     "oh-my-opencode",
-    "opencode-antigravity-auth@1.2.8",
     "opencode-openai-codex-auth"
   ],
   "provider": {
-    "google": {
-      "name": "Google",
-      "models": {
-        "antigravity-gemini-3-pro-high": {
-          "name": "Gemini 3 Pro High (Antigravity)",
-          "thinking": true,
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "antigravity-gemini-3-pro-low": {
-          "name": "Gemini 3 Pro Low (Antigravity)",
-          "thinking": true,
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65535
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "antigravity-gemini-3-flash": {
-          "name": "Gemini 3 Flash (Antigravity)",
-          "attachment": true,
-          "limit": {
-            "context": 1048576,
-            "output": 65536
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        }
-      }
-    },
     "openai": {
       "name": "OpenAI",
       "options": {
