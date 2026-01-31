@@ -37,7 +37,8 @@
   },
   "plugin": [
     "oh-my-opencode",
-    "opencode-openai-codex-auth"
+    "opencode-openai-codex-auth",
+    "opencode-anthropic-auth@latest"
   ],
   "provider": {
     "openai": {
